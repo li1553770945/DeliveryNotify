@@ -3,4 +3,4 @@ class Notify:
         self.key = key
 
     def send(self,title,message):
-        pass
+        print(title,message)

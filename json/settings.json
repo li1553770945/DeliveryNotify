@@ -2,8 +2,8 @@
   "query_interval": 60,
   "notifications": [
     {
-      "type": "pushdeer",
-      "key": "123"
+      "type": "console",
+      "key": "123456"
     }
   ]
 }
