@@ -6,8 +6,6 @@ charset-normalizer==2.1.1
 colorama==0.4.6
 cryptography==39.0.0
 distro==1.8.0
-docker==6.0.1
-docker-compose==1.29.2
 dockerpty==0.4.1
 docopt==0.6.2
 et-xmlfile==1.1.0

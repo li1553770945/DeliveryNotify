@@ -1,9 +1,0 @@
-{
-  "query_interval": 60,
-  "notifications": [
-    {
-      "type": "console",
-      "key": "123456"
-    }
-  ]
-}

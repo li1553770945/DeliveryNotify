@@ -5,6 +5,7 @@ import logging
 from delivery.delivery import Delivery
 from delivery.ems_apple import EmsApple
 from notify.notify import Notify
+from notify.serverjiang import ServerJiang
 
 logger = logging.getLogger(__name__)
 logger.setLevel("INFO")
@@ -75,6 +76,7 @@ def main():
 if __name__ == '__main__':
     notify_classes = {
         "console": Notify,
+        "server-jiang":ServerJiang,
     }
     delivery_classes = {
         "test": Delivery,
