@@ -1,0 +1,9 @@
+{
+  "query_interval": 60,
+  "notifications": [
+    {
+      "type": "pushdeer",
+      "key": "123"
+    }
+  ]
+}
