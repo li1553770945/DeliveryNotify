@@ -1,4 +1,5 @@
 import time
+import traceback
 
 import json
 import logging
@@ -27,7 +28,6 @@ def send_notification():
 def main():
     deliveries = read_json("json/deliveries.json")
     settings = read_json("json/settings.json")
-
     if len(deliveries) == 0:
         logger.warning("快递信息为空")
         return
@@ -42,16 +42,6 @@ def main():
             return
         query_list.append(delivery_classes[deliver_type](number))
 
-    notify_list = list()
-    for notify in settings["notifications"]:
-        notify_type = notify['type']
-        key = notify['key']
-
-        if notify_type not in notify_classes:
-            logger.critical("通知类型：\"{}\"未知".format(notify_type))
-            return
-        notify_list.append(notify_classes[notify_type](key))
-
     while True:
         logger.info("查询中...")
         for query in query_list:
@@ -65,21 +55,47 @@ def main():
 
             if have_update:
                 logger.info("{}变更通知:{}".format(query.number, latest_msg))
-                for notify in notify_list:
-                    notify.send("{}变更通知".format(query.number), latest_msg)
+                send_to_all("{}变更通知".format(query.number), latest_msg)
             else:
                 logger.info("{}无变更，目前最新消息：:{}".format(query.number, latest_msg))
 
         time.sleep(settings['query_interval'])
 
 
+def send_to_all(title, content):
+    for notify in notify_list:
+        notify.send(title, content)
+
+
+def get_notify_list():
+    notify_list = list()
+    settings = read_json("json/settings.json")
+    for notify in settings["notifications"]:
+        notify_type = notify['type']
+        key = notify['key']
+
+        if notify_type not in notify_classes:
+            logger.critical("通知类型：\"{}\"未知".format(notify_type))
+            return None
+        notify_list.append(notify_classes[notify_type](key))
+    return notify_list
+
+
 if __name__ == '__main__':
     notify_classes = {
         "console": Notify,
-        "server-jiang":ServerJiang,
+        "server-jiang": ServerJiang,
     }
     delivery_classes = {
         "test": Delivery,
         "ems-apple": EmsApple,
     }
-    main()
+    notify_list = get_notify_list()
+    if notify_list is None:
+        print("通知列表为None")
+    try:
+        main()
+    except Exception as e:
+        print(repr(e))
+        print(traceback.print_exc())
+        send_to_all("程序运行出错通知", traceback.print_exc())
